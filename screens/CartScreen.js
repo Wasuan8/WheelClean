@@ -18,13 +18,13 @@ const CartScreen = () => {
   const naviagtion = useNavigation();
   const dispatch = useDispatch();
   const userUID = auth.currentUser.uid;
-  const placeOrder = async() =>{
+  const placeOrder = async () => {
     naviagtion.navigate("OrderScreen");
     dispatch(cleanCart());
     await setDoc(
-      doc(db,"users",`${userUID}`),
+      doc(db, "users", `${userUID}`),
       {
-        order:{...cart},
+        order: { ...cart },
         pickUpDetails: route.params,
       },
       {
@@ -35,96 +35,96 @@ const CartScreen = () => {
   };
   return (
     <>
-    <ScrollView style={{marginTop: 45}}>
-      {total === 0 ? (
-        <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-          <Text style={{ marginTop: 40 }}>Your cart is empty</Text>
-        </View>
-      ) : (
-        <>
-          <View style={{ padding: 10, flexDirection: 'row', alignItems: 'center' }}>
-            <Ionicons onPress={() => naviagtion.goBack()} name="arrow-back" size={24} color="black" />
-            <Text>Your Bucket</Text>
-
+      <ScrollView style={{ marginTop: 45 }}>
+        {total === 0 ? (
+          <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+            <Text style={{ marginTop: 40 }}>Your cart is empty</Text>
           </View>
-          <Pressable style={{ backgroundColor: 'white', borderRadius: 12, marginLeft: 10, marginRight: 10, padding: 14 }}>
-            {cart.map((item, index) => (
-              <View style={{flexDirection:'row', alignItems:'center', justifyContent:'space-between', marginVertical:11}}
-                key={index}
-              >
-                <Text style={{ width: 100, fontSize: 16, fontWeight:'500' }}>{item.name} </Text>
+        ) : (
+          <>
+            <View style={{ padding: 10, flexDirection: 'row', alignItems: 'center' }}>
+              <Ionicons onPress={() => naviagtion.goBack()} name="arrow-back" size={24} color="black" />
+              <Text>Your Bucket</Text>
 
-                {/* - + Button */}
-                <Pressable
-                  style={{
-                    flexDirection: "row",
-                    paddingHorizontal: 10,
-                    paddingVertical: 5,
-                    alignItems: "center",
-                    borderColor: "#BEBEBE",
-                    borderWidth: 0.5,
-                    borderRadius: 10,
-                  }}
+            </View>
+            <Pressable style={{ backgroundColor: 'white', borderRadius: 12, marginLeft: 10, marginRight: 10, padding: 14 }}>
+              {cart.map((item, index) => (
+                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginVertical: 11 }}
+                  key={index}
                 >
+                  <Text style={{ width: 100, fontSize: 16, fontWeight: '500' }}>{item.name} </Text>
+
+                  {/* - + Button */}
                   <Pressable
-                    onPress={() => {
-                      dispatch(decrementQuantity(item)); // cart
-                      dispatch(decrementQty(item)); // product
+                    style={{
+                      flexDirection: "row",
+                      paddingHorizontal: 10,
+                      paddingVertical: 5,
+                      alignItems: "center",
+                      borderColor: "#BEBEBE",
+                      borderWidth: 0.5,
+                      borderRadius: 10,
                     }}
                   >
-                    <Text
-                      style={{
-                        fontSize: 20,
-                        color: "#088F8F",
-                        paddingHorizontal: 6,
-                        fontWeight: "600",
+                    <Pressable
+                      onPress={() => {
+                        dispatch(decrementQuantity(item)); // cart
+                        dispatch(decrementQty(item)); // product
                       }}
                     >
-                      -
-                    </Text>
-                  </Pressable>
+                      <Text
+                        style={{
+                          fontSize: 20,
+                          color: "#088F8F",
+                          paddingHorizontal: 6,
+                          fontWeight: "600",
+                        }}
+                      >
+                        -
+                      </Text>
+                    </Pressable>
 
-                  <Pressable>
-                    <Text
-                      style={{
-                        fontSize: 19,
-                        color: "#088F8F",
-                        paddingHorizontal: 8,
-                        fontWeight: "600",
+                    <Pressable>
+                      <Text
+                        style={{
+                          fontSize: 19,
+                          color: "#088F8F",
+                          paddingHorizontal: 8,
+                          fontWeight: "600",
+                        }}
+                      >
+                        {item.quantity}
+                      </Text>
+                    </Pressable>
+
+                    <Pressable
+                      onPress={() => {
+                        dispatch(incrementQuantity(item)); // cart
+                        dispatch(incrementQty(item)); //product
                       }}
                     >
-                      {item.quantity}
-                    </Text>
+                      <Text
+                        style={{
+                          fontSize: 20,
+                          color: "#088F8F",
+                          paddingHorizontal: 6,
+                          fontWeight: "600",
+                        }}
+                      >
+                        +
+                      </Text>
+                    </Pressable>
                   </Pressable>
 
-                  <Pressable
-                    onPress={() => {
-                      dispatch(incrementQuantity(item)); // cart
-                      dispatch(incrementQty(item)); //product
-                    }}
-                  >
-                    <Text
-                      style={{
-                        fontSize: 20,
-                        color: "#088F8F",
-                        paddingHorizontal: 6,
-                        fontWeight: "600",
-                      }}
-                    >
-                      +
-                    </Text>
-                  </Pressable>
-                </Pressable>
 
+                  <Text style={{ fontSize: 16, fontWeight: '500' }}>${item.price * item.quantity}</Text>
 
-                <Text style={{  fontSize: 16, fontWeight:'500' }}>${item.price * item.quantity}</Text>
+                </View>
+              ))}
 
-              </View>
-            ))}
+            </Pressable>
 
-          </Pressable>
-         
-          <View style={{ marginHorizontal: 10 }}>
+            <View style={{ marginHorizontal: 10 }}>
               <Text style={{ fontSize: 16, fontWeight: "bold", marginTop: 30 }}>
                 Billing Details
               </Text>
@@ -184,6 +184,7 @@ const CartScreen = () => {
                     Free Delivery on Your order
                   </Text>
                 </View>
+                {/* second term */}
 
                 <View
                   style={{
@@ -214,9 +215,12 @@ const CartScreen = () => {
                       color: "#088F8F",
                     }}
                   >
-                    {/* {route.params.pickUpDate} */}
+                    {/* {route.params.pickUpDate}  */}
                   </Text>
                 </View>
+                {/* for no of days user  */}
+
+
 
                 <View
                   style={{
@@ -241,6 +245,9 @@ const CartScreen = () => {
                     {route.params.no_Of_days}
                   </Text>
                 </View>
+                {/* selected Pickup time */}
+
+
 
                 <View
                   style={{
@@ -264,6 +271,61 @@ const CartScreen = () => {
                     }}
                   >
                     {route.params.selectedTime}
+                  </Text>
+                </View>
+
+
+                {/* selected Address */}
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    marginVertical: 10,
+
+                  }}
+                >
+                  <Text
+                    style={{ fontSize: 18, fontWeight: "500", color: "gray" }}
+                  >
+                    Address
+                  </Text>
+
+                  <Text
+                    style={{
+                      fontSize: 18,
+                      fontWeight: "400",
+                      color: "#088F8F",
+                    }}
+                  >
+                    {route.params.Address}
+                  </Text>
+                </View>
+
+
+
+                {/* selected services for washing */}
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <Text
+                    style={{ fontSize: 18, fontWeight: "500", color: "gray" }}
+                  >
+                    Service
+                  </Text>
+
+                  <Text
+                    style={{
+                      fontSize: 18,
+                      fontWeight: "400",
+                      color: "#088F8F",
+                    }}
+                  >
+                    {route.params.Service}
                   </Text>
                 </View>
                 <View
@@ -292,12 +354,12 @@ const CartScreen = () => {
                 </View>
               </View>
             </View>
-        </>
+          </>
 
-      )}
+        )}
 
-    </ScrollView>
-    {total === 0 ? null : (
+      </ScrollView>
+      {total === 0 ? null : (
         <Pressable
           style={{
             backgroundColor: "#088F8F",
@@ -333,7 +395,7 @@ const CartScreen = () => {
             </Text>
           </Pressable>
         </Pressable>
-    )}
+      )}
 
     </>
 

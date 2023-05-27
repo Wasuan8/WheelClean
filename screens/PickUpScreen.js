@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, SafeAreaView, TextInput, Pressable, ScrollView, Alert } from 'react-native';
+import { StyleSheet, Text, View, SafeAreaView, TextInput, Pressable, ScrollView, Alert, Image, } from 'react-native';
 import React, { useState } from 'react';
 import { useSelector } from "react-redux";
 import HorizontalDatepicker from '@awrminkhodaei/react-native-horizontal-datepicker';
@@ -6,12 +6,49 @@ import { useNavigation } from '@react-navigation/native';
 
 const PickUpScreen = () => {
   const [selectedDate, setSelectedDate] = useState("");
+  const [address, setAddress] = useState("");
+  const [service, setService] = useState("");
   const cart = useSelector((state) => state.cart.cart);
   const total = cart
     .map((item) => item.quantity * item.price)
     .reduce((curr, prev) => curr + prev, 0);
   const [selectedTime, setSelectedTime] = useState([]);
   const [delivery, setDelivery] = useState([]);
+  const services = [
+    {
+      id: "0",
+      image: "https://cdn-icons-png.flaticon.com/512/2052/2052358.png",
+      name: "Hand Wash",
+
+    },
+    {
+      id: "11",
+      image: "https://cdn-icons-png.flaticon.com/512/1743/1743609.png",
+      name: "Automatic Wash",
+    },
+    {
+      id: "12",
+      image: "https://cdn-icons-png.flaticon.com/512/5385/5385585.png",
+      name: "Touchless Wash",
+
+    },
+    {
+      id: "13",
+      image: "https://cdn-icons-png.flaticon.com/512/4524/4524000.png",
+      name: "Waterless Wash",
+    },
+    {
+      id: "14",
+      image: "https://cdn-icons-png.flaticon.com/512/3626/3626863.png",
+      name: "Mobile Wash",
+    },
+    {
+      id: "15",
+      image: "https://cdn-icons-png.flaticon.com/512/7481/7481872.png",
+      name: "Detailing",
+    },
+
+  ];
   const deliveryTime = [
     {
       id: "0",
@@ -63,7 +100,7 @@ const PickUpScreen = () => {
   ];
   const naviagtion = useNavigation();
   const proceedToCart = () => {
-    if (!selectedDate || !selectedTime || !delivery) {
+    if (!selectedDate || !selectedTime || !delivery || !address || !service) {
       Alert.alert(
         "Empty or invalid",
         "Please select all the fields",
@@ -79,11 +116,14 @@ const PickUpScreen = () => {
       );
 
     }
-    if (selectedDate && selectedTime && delivery){
-      naviagtion.replace("CartScreen",{
-        pickUpDate:selectedDate,
-        selectedTime:selectedTime,
-        no_Of_days:delivery,
+    if (selectedDate && selectedTime && delivery && address && service) {
+      naviagtion.replace("CartScreen", {
+        pickUpDate: selectedDate,
+        selectedTime: selectedTime,
+        no_Of_days: delivery,
+        Address: address,
+        Service: service,
+        
 
       })
 
@@ -91,19 +131,34 @@ const PickUpScreen = () => {
   }
   return (
     <>
-      <SafeAreaView style={{ marginTop: 30 }}>
+      <SafeAreaView style={{ marginTop: 40 }}>
         <Text style={{ fontSize: 16, fontWeight: '500', marginHorizontal: 10 }}>Enter Address</Text>
         <TextInput
+        onChangeText={(text)=> setAddress(text)}
           style={{
-            padding: 40,
+            padding: 10,
             fontSize: 18,
             borderColor: 'gray',
             borderWidth: 0.7,
-            paddingVertical: 80,
+            paddingVertical: 20,
             borderRadius: 9,
             margin: 10,
           }}
         />
+        <Text style={{ fontSize: 16, fontWeight: '500', marginHorizontal: 10 }}>Enter Services Name:</Text>
+          <TextInput
+          onChangeText={(text) => setService(text)}
+            style={{
+              padding: 10,
+              fontSize: 18,
+              borderColor: 'gray',
+              borderWidth: 0.7,
+              paddingVertical: 10,
+              borderRadius: 9,
+              margin: 10,
+            }}
+          />
+
         <Text style={{ fontSize: 16, fontWeight: '500', marginHorizontal: 10 }}>
           Pick Up Date
         </Text>
@@ -138,7 +193,7 @@ const PickUpScreen = () => {
                     margin: 10,
                     borderRadius: 7,
                     padding: 15,
-                    backgroundColor: "red",
+                    backgroundColor: "gray",
                     borderWidth: 0.7,
                   } :
 
@@ -146,11 +201,11 @@ const PickUpScreen = () => {
                     margin: 10,
                     borderRadius: 7,
                     padding: 15,
-                    borderColor: "gray",
+                    borderColor: "red",
                     borderWidth: 0.7,
                   }
               }
-              
+
               onPress={() => setSelectedTime(item.time)}
               key={index} >
               <Text>{item.time}</Text>
@@ -170,14 +225,14 @@ const PickUpScreen = () => {
                     margin: 10,
                     borderRadius: 7,
                     padding: 15,
-                    backgroundColor: "red",
+                    backgroundColor: "gray",
                     borderWidth: 0.7,
                   }
                   : {
                     margin: 10,
                     borderRadius: 7,
                     padding: 15,
-                    borderColor: "gray",
+                    borderColor: "red",
                     borderWidth: 0.7,
                   }
               }
@@ -187,6 +242,22 @@ const PickUpScreen = () => {
               <Text>{item.name}</Text>
             </Pressable>
           ))}
+        </ScrollView>
+        <ScrollView style={{ backgroundColor: "#F0F0F0", }}>
+          <View style={{ padding: 10 }}>
+            <Text style={{ fontSize: 16, fontWeight: "500" }}>Services Available</Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>{services.map((service, index) => (
+              <Pressable style={{ margin: 10, backgroundColor: "white", padding: 20, borderRadius: 7 }} key={index}>
+                <Image source={{ uri: service.image }} style={{ width: 70, height: 70 }} />
+
+                <Text style={{ textAlign: "center", marginTop: 10 }}>{service.name}</Text>
+
+              </Pressable>
+            ))}
+            </ScrollView>
+
+          </View>
+          
         </ScrollView>
       </SafeAreaView>
       {total === 0 ? null : (
